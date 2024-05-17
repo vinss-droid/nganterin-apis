@@ -191,7 +191,7 @@ class AuthController extends Controller
 
             if (!is_null($userData->email_verified_at)) {
                 return response()->json([
-                    'status' => 'failed',
+                    'status' => 'failed',x
                     'message' => 'Email has been verified.',
                 ], Response::HTTP_NOT_ACCEPTABLE);
             }
