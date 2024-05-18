@@ -121,7 +121,7 @@ class AuthController extends Controller
 
             $validation = Validator::make($request->all(), [
                 'name' => 'required',
-                'email' => 'required|unique:users,email',
+                'email' => 'required',
                 'profile_picture' => 'required|url:http,https',
             ]);
 
@@ -150,8 +150,7 @@ class AuthController extends Controller
                 'status' => 'success',
                 'message' => 'login successfully',
                 'data' =>
-                    User::findOrFail($user->id)
-                        ->select('name', 'profile_picture', 'role', 'email', 'email_verified_at')->first(),
+                    User::select('name', 'profile_picture', 'role', 'email', 'email_verified_at')->findOrFail($user->id),
                 'token' => $user->createToken($user->id, ['*'], now()->addDays(3))->plainTextToken,
                 'token_expiration' => now()->addDays(3)
             ], Response::HTTP_OK);
