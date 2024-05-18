@@ -14,7 +14,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->append(\App\Http\Middleware\ForceJsonResponse::class);
         $middleware->alias([
-            'verified' => \App\Http\Middleware\Verified::class
+            'verified' => \App\Http\Middleware\Verified::class,
+            'partner' => \App\Http\Middleware\Partner::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

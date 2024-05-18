@@ -23,7 +23,7 @@ class PartnerController extends Controller
                 return response()->json([
                     'status' => 'failed',
                     'message' => 'You not registered as partner',
-                ], Response::HTTP_NOT_ACCEPTABLE);
+                ], Response::HTTP_FORBIDDEN);
             }
 
             return response()->json([

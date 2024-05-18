@@ -69,6 +69,7 @@ Route::prefix('/v1')->group(function () {
 
             Route::prefix('/partner')
                 ->controller(PartnerController::class)
+                ->middleware(['partner'])
                 ->group(function () {
                     Route::get('/', 'getPartner')->name('partner');
                     Route::post('/register', 'registerPartners')->name('partner.register');
