@@ -18,6 +18,14 @@ class PartnerController extends Controller
     public function getPartner()
     {
         try {
+
+            if (is_null($this->whoIsRegistered()->id)) {
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'You not registered as partner',
+                ], Response::HTTP_NOT_ACCEPTABLE);
+            }
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Partner find successfully',
@@ -97,7 +105,7 @@ class PartnerController extends Controller
     public function whoIsRegistered()
     {
         try {
-            $data = User::join('partners', 'partners.id', '=', 'users.partner_id')
+            $data = User::leftJoin('partners', 'partners.id', '=', 'users.partner_id')
                 ->where('users.id', Auth::user()->id)
                 ->select('users.name AS partner_registered_by', 'partners.*')
                 ->first()
