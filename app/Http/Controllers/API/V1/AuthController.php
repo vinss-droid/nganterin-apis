@@ -153,7 +153,8 @@ class AuthController extends Controller
                     User::leftJoin('partners', 'users.partner_id', '=', 'partners.id')
                         ->select(
                             'name', 'profile_picture', 'role', 'email', 'email_verified_at',
-                            'partners.company_name', 'partners.verified_at AS partner_verified_at'
+                            'users.partner_id', 'partners.verified_at AS partner_verified_at',
+                            'partners.company_field'
                         )
                         ->findOrFail($user->id),
                 'token' => $user->createToken($user->id, ['*'], now()->addDays(3))->plainTextToken,
