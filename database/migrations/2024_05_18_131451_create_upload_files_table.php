@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('upload_files', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('user_id')->constrained();
+            $table->foreignUuid('user_id')->constrained('users', 'id');
             $table->string('file_name');
             $table->string('file_extension');
             $table->string('file_size');
