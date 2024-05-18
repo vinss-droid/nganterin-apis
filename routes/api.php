@@ -3,11 +3,19 @@
 use App\Http\Controllers\API\V1\APIKeyController;
 use App\Http\Controllers\API\V1\AuthController;
 use App\Http\Controllers\API\V1\PartnerController;
+use App\Http\Controllers\API\V1\UploadFileController;
 use App\Http\Controllers\API\V1\UserController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('/v1')->group(function () {
+
+    Route::prefix('files')
+        ->controller(UploadFileController::class)
+        ->group(function () {
+            Route::get('/{id}', 'getFile')->name('files');
+        });
+
     Route::prefix('/api-key')->controller(APIKeyController::class)->group(function () {
         Route::post('/generate', 'generateApiKey')->name('apiKey.generate');
         Route::get('/activate/{name}', 'activateApiKey')->name('apiKey.activate');
@@ -44,6 +52,12 @@ Route::prefix('/v1')->group(function () {
         });
 
         Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+
+            Route::prefix('files')
+                ->controller(UploadFileController::class)
+                ->group(function () {
+                    Route::post('/upload', 'uploadFile')->name('files.upload');
+                });
 
             Route::prefix('profile')
                 ->controller(UserController::class)
