@@ -137,7 +137,7 @@ class AuthController extends Controller
                'email' => $request->email,
             ],[
                 'name' => ucwords(strtolower($request->name)),
-                'username' => $request->username,
+                'username' => $request->email,
                 'email' => $request->email,
                 'profile_picture' => $request->profile_picture,
                 'password' => Hash::make('google_login_' . $request->username . '_' . now()),
@@ -191,7 +191,7 @@ class AuthController extends Controller
 
             if (!is_null($userData->email_verified_at)) {
                 return response()->json([
-                    'status' => 'failed',x
+                    'status' => 'failed',
                     'message' => 'Email has been verified.',
                 ], Response::HTTP_NOT_ACCEPTABLE);
             }

@@ -20,6 +20,7 @@ Route::prefix('/v1')->group(function () {
     Route::middleware('auth.apikey')->group(function () {
 
         Route::prefix('/auth')->controller(AuthController::class)->group(function () {
+            Route::post('/login/oauth/google', 'googleLoginRegister')->name('auth.login.google');
             Route::post('/login/email', 'emailLogin')->name('auth.login.email');
             Route::post('/register', 'emailRegister')->name('auth.register');
 
