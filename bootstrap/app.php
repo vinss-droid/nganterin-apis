@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'verified' => \App\Http\Middleware\Verified::class,
             'partner' => \App\Http\Middleware\Partner::class,
+            'hotels' => \App\Http\Middleware\HotelPartner::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
