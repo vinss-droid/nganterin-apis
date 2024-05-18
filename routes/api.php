@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\V1\APIKeyController;
 use App\Http\Controllers\API\V1\AuthController;
+use App\Http\Controllers\API\V1\PartnerController;
 use App\Http\Controllers\API\V1\UserController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Route;
@@ -50,6 +51,13 @@ Route::prefix('/v1')->group(function () {
                     Route::get('/', 'profile')->name('profile.index');
                     Route::post('/user-detail', 'createOrUpdateUserDetail')->name('profile.createOrUpdateUserDetail');
                     Route::post('/address', 'updateUserAddress')->name('profile.updateUserAddress');
+                });
+
+            Route::prefix('/partner')
+                ->controller(PartnerController::class)
+                ->group(function () {
+                    Route::get('/', 'getPartner')->name('partner');
+                    Route::post('/register', 'registerPartners')->name('partner.register');
                 });
 
         });
