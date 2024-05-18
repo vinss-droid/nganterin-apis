@@ -150,7 +150,12 @@ class AuthController extends Controller
                 'status' => 'success',
                 'message' => 'login successfully',
                 'data' =>
-                    User::select('name', 'profile_picture', 'role', 'email', 'email_verified_at')->findOrFail($user->id),
+                    User::leftJoin('partners', 'users.partner_id', '=', 'partners.id')
+                        ->select(
+                            'name', 'profile_picture', 'role', 'email', 'email_verified_at',
+                            'partners.company_name', 'partners.verified_at AS partner_verified_at'
+                        )
+                        ->findOrFail($user->id),
                 'token' => $user->createToken($user->id, ['*'], now()->addDays(3))->plainTextToken,
                 'token_expiration' => now()->addDays(3)
             ], Response::HTTP_OK);
