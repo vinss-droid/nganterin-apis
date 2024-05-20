@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\V1\APIKeyController;
 use App\Http\Controllers\API\V1\AuthController;
+use App\Http\Controllers\API\V1\CheckoutController;
 use App\Http\Controllers\API\V1\HotelController;
 use App\Http\Controllers\API\V1\PartnerController;
 use App\Http\Controllers\API\V1\UploadFileController;
@@ -98,6 +99,12 @@ Route::prefix('/v1')->group(function () {
                 ->group(function () {
                     Route::get('/', 'searchHotel')->name('hotels.search');
                     Route::get('/{id}', 'getHotelById')->name('hotels.detail');
+                });
+
+            Route::prefix('checkout')
+                ->controller(CheckoutController::class)
+                ->group(function () {
+                    Route::post('/', 'checkout')->name('checkout');
                 });
 
         });
