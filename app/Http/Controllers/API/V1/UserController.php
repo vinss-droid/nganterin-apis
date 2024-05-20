@@ -18,8 +18,8 @@ class UserController extends Controller
     {
         try {
             $user = User::findOrFail(Auth::user()->id)
-                ->join('user_details', 'users.id', '=', 'user_details.user_id')
-                ->join('addresses', 'users.id', '=', 'addresses.user_id')
+                ->leftJoin('user_details', 'users.id', '=', 'user_details.user_id')
+                ->leftJoin('addresses', 'users.id', '=', 'addresses.user_id')
                 ->select(
                     'users.name', 'users.email', 'users.profile_picture', 'users.email_verified_at',
                     'user_details.gender', 'user_details.phone_number',
