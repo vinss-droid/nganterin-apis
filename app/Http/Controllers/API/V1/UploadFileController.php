@@ -28,16 +28,16 @@ class UploadFileController extends Controller
 
             if ($this->allowedFileType($fileData->file_extension)) {
                 return response()->file($fileData->file_path, [
-                    'content-type' => $fileData->file_type,
+                    'content-type' => 'image/' .$fileData->file_extension,
                     'content-length' => $fileData->file_size,
                     'content-disposition' => 'inline; filename="' . basename($fileData->file_name) . '"',
                 ]);
             }
 
             return response()->file($fileData->file_path, [
-                'content-type' => $fileData->file_type,
+                'content-type' => 'application/' . $fileData->file_extension,
                 'content-length' => $fileData->file_size,
-                'content-disposition' => 'attachment; filename="' . basename($fileData->file_name) . '"',
+                'content-disposition' => 'inline; filename="' . basename($fileData->file_name) . '"',
             ]);
 
         } catch (\Exception $exception) {
