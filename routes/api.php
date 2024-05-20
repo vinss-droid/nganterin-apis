@@ -96,7 +96,8 @@ Route::prefix('/v1')->group(function () {
             Route::prefix('/hotels')
                 ->controller(HotelController::class)
                 ->group(function () {
-                    Route::get('/search?key={search}', 'searchHotel')->name('hotels.search');
+                    Route::get('/', 'searchHotel')->name('hotels.search');
+                    Route::get('/{id}', 'getHotelById')->name('hotels.detail');
                 });
 
         });

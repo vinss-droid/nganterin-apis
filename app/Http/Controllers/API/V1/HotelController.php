@@ -46,14 +46,20 @@ class HotelController extends Controller
         }
     }
 
-    public function searchHotel($key)
+    public function searchHotel(Request $request)
     {
         try {
+
+            $search = $request->get('search');
+
             $hotels = Hotel::join('hotel_details', 'hotel_details.hotel_id', '=', 'hotels.id')
                 ->join('locations', 'hotels.location_id', '=', 'locations.id')
                 ->where('hotels.deleted_at', null)
+                ->where('hotels.name', 'like', '%' . $search . '%')
+                ->orWhere('locations.state', 'like', '%' . $search . '%')
+                ->orWhere('locations.city', 'like', '%' . $search . '%')
                 ->select(
-                    'hotels.name', 'hotels.description',
+                    'hotels.id', 'hotels.name', 'hotels.description',
                     'locations.country', 'locations.state', 'locations.city', 'locations.zip_code',
                     'locations.complete_address', 'locations.gmaps',
                     'hotel_details.max_visitor', 'hotel_details.room_sizes',
@@ -61,7 +67,37 @@ class HotelController extends Controller
                     'hotel_details.hotel_photos', 'hotel_details.overnight_prices',
                     'hotel_details.total_room', 'hotel_details.total_booked'
                 )
-                ->search($key)
+                ->get();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'hotels retrieved successfully',
+                'data' => $hotels
+            ], Response::HTTP_OK);
+        } catch (\Exception $exception) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed while processing your request',
+                'error' => $exception->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function getHotelById($id)
+    {
+        try {
+            $hotels = Hotel::join('hotel_details', 'hotel_details.hotel_id', '=', 'hotels.id')
+                ->join('locations', 'hotels.location_id', '=', 'locations.id')
+                ->where(['hotels.deleted_at' => null, 'hotels.id' => $id])
+                ->select(
+                    'hotels.id', 'hotels.name', 'hotels.description',
+                    'locations.country', 'locations.state', 'locations.city', 'locations.zip_code',
+                    'locations.complete_address', 'locations.gmaps',
+                    'hotel_details.max_visitor', 'hotel_details.room_sizes',
+                    'hotel_details.smoking_allowed', 'hotel_details.facilities',
+                    'hotel_details.hotel_photos', 'hotel_details.overnight_prices',
+                    'hotel_details.total_room', 'hotel_details.total_booked'
+                )
                 ->get();
 
             return response()->json([
