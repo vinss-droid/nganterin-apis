@@ -91,6 +91,9 @@ class PartnerController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'partner created successfully',
+                'data' => [
+                    'partner_id' => $partner->id
+                ]
             ], Response::HTTP_OK);
         } catch (\Exception $exception) {
             DB::rollBack();
