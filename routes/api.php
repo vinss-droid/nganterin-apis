@@ -74,6 +74,7 @@ Route::prefix('/v1')->group(function () {
                 ->controller(UploadFileController::class)
                 ->group(function () {
                     Route::post('/upload', 'uploadFile')->name('files.upload');
+                    Route::post('/multi-upload', 'multiUploadFile')->name('files.multiUpload');
                 });
 
             Route::prefix('/profile')

@@ -102,6 +102,65 @@ class UploadFileController extends Controller
         }
     }
 
+    public function multiUploadFile(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $validator = Validator::make($request->all(), [
+                'files' => 'required|array',
+                'files.*' => 'file|mimes:jpeg,jpg,png,pdf|max:5120',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'validation errors',
+                    'errors' => $validator->errors()
+                ], Response::HTTP_BAD_REQUEST);
+            }
+
+            $files = $request->file('files');
+            $responseURL = [];
+
+            foreach ($files as $file) {
+                $fileName = Str::uuid() . '_' . $file->getClientOriginalName();
+
+                if (!File::exists($this->userPath())) {
+                    File::makeDirectory($this->userPath(), 0755, true);
+                }
+
+                $file->move($this->userPath(), $fileName);
+
+                $uploadedFile = UploadFile::create([
+                    'user_id' => Auth::user()->id,
+                    'file_name' => $fileName,
+                    'file_extension' => $file->getClientOriginalExtension(),
+                    'file_size' => File::size($this->userPath() . '/' .$fileName),
+                    'file_type' => $this->allowedFileType($file->getClientOriginalExtension()) ? 'image' : 'pdf',
+                    'file_path' => $this->userPath() . '/' . $fileName,
+                    'file_url' => $this->fileUrl(Str::uuid() . '-' . date('ymdhisv')),
+                ]);
+                $responseURL[] = $uploadedFile->file_url;
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'File uploaded successfully',
+                'data' => $responseURL
+            ], Response::HTTP_OK);
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Error while uploading file',
+                'errors' => $exception->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
     private function userPath()
     {
         return storage_path("app/public/files/" . Auth::user()->id);
