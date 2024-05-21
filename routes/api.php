@@ -32,7 +32,7 @@ Route::prefix('/v1')->group(function () {
     Route::prefix('/payments')
         ->controller(CheckoutController::class)
         ->group(function () {
-            Route::get('/receive', 'receiveStatus')
+            Route::post('/receive', 'receiveStatus')
                 ->name('payments.receiveStatus');
         });
 
