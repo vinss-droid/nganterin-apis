@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignUuid('partner_id')->constrained('partners', 'id')->noActionOnDelete();
             $table->foreignUuid('location_id')->constrained('locations', 'id')->noActionOnDelete();
             $table->string('name')->unique();
-            $table->string('description');
+            $table->text('description');
             $table->timestamps();
             $table->softDeletes();
         });
