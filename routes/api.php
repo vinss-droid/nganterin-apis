@@ -31,6 +31,13 @@ Route::prefix('/v1')->group(function () {
 
     Route::middleware('auth.apikey')->group(function () {
 
+        Route::prefix('/hotels')
+            ->controller(HotelController::class)
+            ->group(function () {
+                Route::get('/', 'searchHotel')->name('hotels.search');
+                Route::get('/{id}', 'getHotelById')->name('hotels.detail');
+            });
+
         Route::prefix('/locations')
             ->controller(CountryStateCityController::class)
             ->group(function () {
@@ -80,10 +87,15 @@ Route::prefix('/v1')->group(function () {
 
             Route::prefix('/partner')
                 ->controller(PartnerController::class)
+                ->group(function () {
+                    Route::post('/register', 'registerPartners')->name('partner.register');
+                });
+
+            Route::prefix('/partner')
+                ->controller(PartnerController::class)
                 ->middleware(['partner'])
                 ->group(function () {
                     Route::get('/', 'getPartner')->name('partner');
-                    Route::post('/register', 'registerPartners')->name('partner.register');
 
                     Route::prefix('hotels')
                         ->controller(HotelController::class)
