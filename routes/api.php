@@ -29,6 +29,13 @@ Route::prefix('/v1')->group(function () {
         });
     });
 
+    Route::prefix('/payments')
+        ->controller(CheckoutController::class)
+        ->group(function () {
+            Route::get('/receive', 'receiveStatus')
+                ->name('payments.receiveStatus');
+        });
+
     Route::middleware('auth.apikey')->group(function () {
 
         Route::prefix('/hotels')
@@ -117,13 +124,6 @@ Route::prefix('/v1')->group(function () {
                 ->controller(CheckoutController::class)
                 ->group(function () {
                     Route::post('/', 'checkout')->name('checkout');
-                });
-
-            Route::prefix('/payments')
-                ->controller(CheckoutController::class)
-                ->group(function () {
-                    Route::get('/receive', 'receiveStatus')
-                        ->name('payments.receiveStatus');
                 });
         });
 
