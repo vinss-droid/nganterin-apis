@@ -30,6 +30,13 @@ Route::prefix('/v1')->group(function () {
 
     Route::middleware('auth.apikey')->group(function () {
 
+        Route::prefix('/hotels')
+            ->controller(HotelController::class)
+            ->group(function () {
+                Route::get('/', 'searchHotel')->name('hotels.search');
+                Route::get('/{id}', 'getHotelById')->name('hotels.detail');
+            });
+
         Route::prefix('/locations')
             ->controller(CountryStateCityController::class)
             ->group(function () {
@@ -91,13 +98,6 @@ Route::prefix('/v1')->group(function () {
                            Route::get('/', 'getMyHotels')->name('hotel.index');
                            Route::post('/create', 'createHotel')->name('hotel.create');
                         });
-                });
-
-            Route::prefix('/hotels')
-                ->controller(HotelController::class)
-                ->group(function () {
-                    Route::get('/', 'searchHotel')->name('hotels.search');
-                    Route::get('/{id}', 'getHotelById')->name('hotels.detail');
                 });
 
         });
