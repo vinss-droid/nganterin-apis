@@ -15,7 +15,7 @@ class CallbackService extends Midtrans
     public function __construct()
     {
         parent::__construct();
-        $this->serverKey = config('services.midtrans.serverKey');
+        $this->serverKey = config('midtrans.serverKey');
         $this->_handleNotification();
     }
 
