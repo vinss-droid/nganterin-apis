@@ -19,7 +19,7 @@ class CheckoutController extends Controller
 {
     public function checkout(Request $request)
     {
-//        try {
+        try {
             DB::beginTransaction();
 
             $validator = Validator::make($request->all(), [
@@ -77,14 +77,51 @@ class CheckoutController extends Controller
                 ]
             ], Response::HTTP_OK);
 
-//        } catch (\Exception $exception) {
-//            DB::rollBack();
-//            return response()->json([
-//                'status' => 'failed',
-//                'message' => 'Error while processing data!',
-//                'errors' => $exception->getMessage()
-//            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-//        }
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Error while processing data!',
+                'errors' => $exception->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function updateStatusPayment(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $validator = Validator::make($request->all(), [
+                'order_id' => 'required|exists:orders,id',
+                'transaction_status' => 'required'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'validation failed',
+                    'errors' => $validator->errors()
+                ], Response::HTTP_BAD_REQUEST);
+            }
+
+            $orderStatus = Order::findOrFail($request->order_id)->update([
+                'is_completed' => $request->transaction_status === 'settlement' ? 1 : 0
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'order status updated successfully',
+            ], Response::HTTP_OK);
+        } catch (\Exception $exception) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Error while processing data!',
+                'errors' => $exception->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     public function receiveStatus()
@@ -124,6 +161,33 @@ class CheckoutController extends Controller
             return response()->json([
                 'status' => 'failed',
                 'message' => 'Invalid signature key'
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function historyCheckout()
+    {
+        try {
+            $orders = Order::join('hotels', 'hotels.id', '=', 'orders.product_id')
+                    ->join('hotel_details', 'hotel_details.hotel_id', '=', 'hotels.id')
+                    ->join('payments', 'payments.order_id', '=', 'orders.id')
+                    ->where('orders.customer_id', Auth::user()->id)
+                    ->select(
+                        'hotels.name AS hotel_name', 'hotel_details.hotel_photos', 'orders.code AS invoice',
+                        'orders.created_at', 'payments.total_price', 'orders.is_completed'
+                    )
+                    ->get();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'orders received successfully',
+                'data' => $orders
+            ], Response::HTTP_OK);
+        } catch (\Exception $exception) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Error while processing data!',
+                'errors' => $exception->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

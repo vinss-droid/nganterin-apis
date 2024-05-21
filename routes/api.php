@@ -124,6 +124,8 @@ Route::prefix('/v1')->group(function () {
                 ->controller(CheckoutController::class)
                 ->group(function () {
                     Route::post('/', 'checkout')->name('checkout');
+                    Route::get('/history', 'historyCheckout')->name('checkout.history');
+                    Route::post('/payments/update-status', 'updateStatusPayment')->name('checkout.update.payments');
                 });
         });
 

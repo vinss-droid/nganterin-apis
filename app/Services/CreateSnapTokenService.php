@@ -45,6 +45,9 @@ class CreateSnapTokenService extends Midtrans
             'enabled_payments' => [
                 'other_qris', 'shopeepay', 'gopay',
                 'bca_va', 'bni_va', 'echannel', 'bri_va', 'other_va'
+            ],
+            'callbacks' => [
+                'finish' => 'https://nganterin.vinss.my.id/payment/success'
             ]
         ];
 
