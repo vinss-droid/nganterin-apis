@@ -98,7 +98,7 @@ class HotelController extends Controller
                     'hotel_details.hotel_photos', 'hotel_details.overnight_prices',
                     'hotel_details.total_room', 'hotel_details.total_booked'
                 )
-                ->get();
+                ->first();
 
             return response()->json([
                 'status' => 'success',
