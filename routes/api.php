@@ -7,7 +7,8 @@ use App\Http\Controllers\API\V1\HotelController;
 use App\Http\Controllers\API\V1\PartnerController;
 use App\Http\Controllers\API\V1\UploadFileController;
 use App\Http\Controllers\API\V1\UserController;
-use \App\Http\Controllers\API\V1\CountryStateCityController;
+use App\Http\Controllers\API\V1\CountryStateCityController;
+use App\Http\Controllers\API\V1\RatingController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Route;
 
@@ -120,6 +121,13 @@ Route::prefix('/v1')->group(function () {
                     Route::post('/', 'checkout')->name('checkout');
                     Route::get('/history', 'historyCheckout')->name('checkout.history');
                     Route::post('/payments/update-status', 'updateStatusPayment')->name('checkout.update.payments');
+                });
+
+            Route::prefix('rating')
+                ->controller(RatingController::class)
+                ->group(function () {
+//                    Route::get('/', 'historyCheckout')->name('checkout.history');
+                    Route::post('/', 'postRating')->name('rating.post');
                 });
         });
 
