@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Hotel;
 use App\Models\HotelDetail;
 use App\Models\Location;
+use App\Models\Rating;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -96,14 +97,34 @@ class HotelController extends Controller
                     'hotel_details.max_visitor', 'hotel_details.room_sizes',
                     'hotel_details.smoking_allowed', 'hotel_details.facilities',
                     'hotel_details.hotel_photos', 'hotel_details.overnight_prices',
-                    'hotel_details.total_room', 'hotel_details.total_booked'
+                    'hotel_details.total_room', 'hotel_details.total_booked',
                 )
                 ->first();
+
+            $ratings = Rating::join('orders', 'ratings.order_id', '=', 'orders.id')
+                ->join('hotels', 'orders.product_id', '=', 'hotels.id')
+                ->where('hotels.id', $id);
+
+            $ratings = [
+                'service_rating' =>
+                    number_format($ratings->avg('service_rating'), 1),
+                'cleanliness_rating' =>
+                    number_format($ratings->avg('cleanliness_rating'), 1),
+                'value_for_money_rating' =>
+                    number_format($ratings->avg('value_for_money_rating'), 1),
+                'location_rating' =>
+                    number_format($ratings->avg('location_rating'), 1),
+                'cozy_rating' =>
+                    number_format($ratings->avg('cozy_rating'), 1),
+            ];
+
+            $ratings['overall_ratings'] = number_format(array_sum($ratings) / count($ratings), 1);
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'hotels retrieved successfully',
-                'data' => $hotels
+                'data' => $hotels,
+                'rating' => $ratings
             ], Response::HTTP_OK);
         } catch (\Exception $exception) {
             return response()->json([
